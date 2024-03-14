@@ -7,21 +7,28 @@ function getComputerChoice() {
     } else if (randomNumber == 2) {
         computerSelection = "paper";
     } else {
-        computerSelection = "scissor";
+        computerSelection = "scissors";
     }
 
     return computerSelection;
 };
 
-function playRound() {
+function cleanButtons() {
+    let buttonContainer = document.querySelector('#button_container');
+    buttonContainer.removeChild(rock);
+    buttonContainer.removeChild(paper);
+    buttonContainer.removeChild(scissors);
+}
+
+function playRound(selection) {
     let winner
-    let playerSelection = prompt("Choose: rock, paper or scissor").toLowerCase();
+    let playerSelection = selection;
     let computerSelection = getComputerChoice();
     let isValid = false;
 
     do {
         if (evaluateInput(playerSelection)==false) {
-            playerSelection = prompt("Please choose either rock, paper or scissor. No other values work");
+            playerSelection = prompt("Please choose either rock, paper or scissors. No other values work");
         } else {
             isValid = true
         }
@@ -29,7 +36,7 @@ function playRound() {
 
     
     if (playerSelection == "rock") {
-        if (computerSelection == "scissor") {
+        if (computerSelection == "scissors") {
             winner = "player";
         } else if (computerSelection == "paper") {
             winner = "computer";
@@ -39,7 +46,7 @@ function playRound() {
     } else if (playerSelection == "paper") {
         if (computerSelection == "rock") {
             winner = "player";
-        } else if (computerSelection == "scissor") {
+        } else if (computerSelection == "scissors") {
             winner = "computer";
         } else {
             winner = "tie";
@@ -56,18 +63,34 @@ function playRound() {
 
     if (winner == "computer") {
         message = `You Lose! ${computerSelection} beats ${playerSelection}`;
+        result_text.textContent = `You Lose! ${computerSelection} beats ${playerSelection}`;
+        computer_score = computer_score+1;
+        computer_score_display.textContent = computer_score;
     } else if (winner == "player") {
         message = `You Win! ${playerSelection} beats ${computerSelection}`;
+        result_text.textContent = `You Win! ${playerSelection} beats ${computerSelection}`;
+        player_score = player_score+1;
+        player_score_display.textContent = player_score;
     } else {
         message = "Its a Tie! No one wins!";
+        result_text.textContent = "Its a Tie! No one wins!";
     }
     console.log(message);
+
+    // Check if game won
+    if (computer_score == 5) {
+        result_text.textContent = "Computer was the first to reach 5 points. Computer wins game!";
+        cleanButtons();
+    } else if (player_score == 5) {
+        result_text.textContent = "Player was the first to reach 5 points. Player wins game!";
+        cleanButtons();
+    }
 
     return winner;
 }
 
 function evaluateInput(input) {
-    let validValues = ["rock", "paper", "scissor"];
+    let validValues = ["rock", "paper", "scissors"];
     let isValid = false;
     if (validValues.includes(input)) {
         isValid = true;
@@ -76,7 +99,7 @@ function evaluateInput(input) {
     return isValid;
 }
 
-function playGame() {
+/* function playGame() {
     let message, winner;
     let playerScore = 0;
     let computerScore = 0;
@@ -101,9 +124,30 @@ function playGame() {
         message = `It's a tie! ${playerScore}-${computerScore}`;
     }
     console.log("Game finished:");
-    console.log(message);
+    console.log(message); 
 
-}
+}*/
+
+// define buttings
+let rock = document.querySelector('#rock');
+let paper = document.querySelector('#paper');
+let scissors = document.querySelector('#scissors');
+
+// Add event listeners
+rock.addEventListener('click', () => playRound("rock"));
+paper.addEventListener('click', () => playRound("paper"));
+scissors.addEventListener('click', () => playRound("scissors"));
+
+// tag display windows
+let result_text = document.querySelector('#result_text');
+let player_score_display = document.querySelector('#player_score');
+let computer_score_display = document.querySelector('#computer_score');
+
+// Initialize score
+player_score = 0;
+computer_score = 0;
+player_score_display.textContent = player_score;
+computer_score_display.textContent = computer_score;
 
 // Code runs here
-playGame();
+// playGame();
